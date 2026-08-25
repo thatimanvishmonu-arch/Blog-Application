@@ -97,13 +97,47 @@ const logoutBtn = document.getElementById("logoutBtn");
 
 if (logoutBtn) {
     logoutBtn.addEventListener("click", function () {
-        localStorage.clear();
-        window.location.href = "login.html";
-    });
+    window.location.href = "login.html";
+});
 }
 function logout() {
-    localStorage.clear();
     window.location.href = "login.html";
 }
+// CREATE BLOG
+const blogForm = document.getElementById("blogForm");
 
+if (blogForm) {
+    blogForm.addEventListener("submit", async function(event) {
+        event.preventDefault();
+
+        const title = document.getElementById("title").value;
+        const content = document.getElementById("content").value;
+
+        try {
+            const response = await fetch("http://localhost:5000/api/blogs", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    title: title,
+                    content: content
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert("Blog published successfully!");
+                window.location.href = "dashboard.html";
+            } else {
+                alert(data.message || "Failed to publish blog");
+            }
+
+        } catch (error) {
+            console.error(error);
+            alert("Server error");
+        }
+    });
+}
 
