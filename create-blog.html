@@ -3,34 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Blog</title>
+    <title>Blog Details</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
     <div class="container">
-        <h1>Create New Blog</h1>
+        <h1 id="blogTitle">Loading...</h1>
 
-        <form id="blogForm">
+        <p id="blogAuthor"></p>
+        <p id="blogDate"></p>
 
-            <label for="title">Blog Title</label>
-            <input type="text" id="title" placeholder="Enter blog title" required>
+        <hr>
 
-            <label for="content">Blog Content</label>
-            <textarea id="content" rows="10"
-                placeholder="Write your blog content..." required></textarea>
-
-            <button type="submit">Publish Blog</button>
-
-        </form>
+        <p id="blogContent"></p>
 
         <br>
 
-        <a href="dashboard.html">Back to Dashboard</a>
+        <a href="dashboard.html">← Back to Dashboard</a>
     </div>
 
-    <script src="js/script.js"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get("id");
+
+        async function loadBlog() {
+            try {
+                const response = await fetch(`/api/blogs/${id}`);
+                const blog = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(blog.message);
+                }
+
+                document.getElementById("blogTitle").textContent = blog.title;
+                document.getElementById("blogAuthor").textContent =
+                    "Author: " + blog.author;
+                document.getElementById("blogDate").textContent =
+                    "Published: " + new Date(blog.createdAt).toLocaleString();
+                document.getElementById("blogContent").textContent =
+                    blog.content;
+
+            } catch (error) {
+                document.getElementById("blogTitle").textContent =
+                    "Blog not found";
+                console.error(error);
+            }
+        }
+
+        loadBlog();
+    </script>
 
 </body>
 </html>
