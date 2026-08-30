@@ -209,7 +209,43 @@ app.get("/api/blogs", async (req, res) => {
     });
   }
 });
+// =========================
+// UPDATE BLOG API
+// =========================
 
+app.put("/api/blogs/:id", async (req, res) => {
+  try {
+    const { title, content, author } = req.body;
+
+    const updatedBlog = await Blog.findByIdAndUpdate(
+      req.params.id,
+      {
+        title,
+        content,
+        author: author || "Anonymous"
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedBlog) {
+      return res.status(404).json({
+        message: "Blog not found"
+      });
+    }
+
+    res.json({
+      message: "Blog updated successfully",
+      blog: updatedBlog
+    });
+
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: "Failed to update blog"
+    });
+  }
+});
 
 // ===============================
 // DELETE BLOG API
