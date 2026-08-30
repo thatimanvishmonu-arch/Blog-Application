@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken");
 const express = require("express");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
@@ -102,6 +103,11 @@ app.post("/api/login", async (req, res) => {
       password,
       user.password
     );
+    const token = jwt.sign(
+    { userId: user._id },
+    process.env.JWT_SECRET,
+    { expiresIn: "1d" }
+);
 
     if (!passwordMatch) {
       return res.status(401).json({
@@ -109,14 +115,12 @@ app.post("/api/login", async (req, res) => {
       });
     }
 
-    res.json({
-      message: "Login successful",
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email
-      }
-    });
+
+res.json({
+    message: "Login successful",
+    token,
+    user
+});
 
   } catch (error) {
     console.error(error);
