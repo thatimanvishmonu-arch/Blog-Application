@@ -275,8 +275,4 @@ app.delete("/api/blogs/:id", async (req, res) => {
 // ===============================
 // SERVER
 // ===============================
-const PORT = 5000;
-
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+module.exports = app;
